@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>History - YouTube Clone</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">YouTube</div>
+    <input type="text" placeholder="Search videos..." />
+    <div class="profile"></div>
+  </div>
+
+  <!-- Dark Mode Toggle -->
+  <div class="theme-toggle">
+    <label for="toggle-dark">
+      🌙 Dark Mode
+      <input type="checkbox" id="toggle-dark" />
+    </label>
+  </div>
+
+  <!-- Main layout -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="index.html">Home</a>
+      <a href="explore.html">Explore</a>
+      <a href="history.html" class="active">History</a>
+      <a href="trending.html">Trending</a>
+      <a href="shorts.html">Shorts</a>
+      <a href="subscription.html">Subscriptions</a>
+      <a href="library.html">Library</a>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+      <h2>Watch History</h2>
+      <button id="clear-history" style="margin-bottom:20px; padding:8px 16px; border:none; background:#c00; color:#fff; border-radius: 20px; cursor:pointer;">Clear History</button>
+      <div id="historyGrid" class="video-grid">
+        <!-- History videos inserted here -->
+      </div>
+    </div>
+  </div>
+
+    <div id="historyGrid" class="video-grid"></div>
+    <button id="clear-history">Clear History</button>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal">
+    <div class="modal-content">
+        <span id="close-modal">&times;</span>
+        <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+    </div>
+
+  <script src="shared.js"></script>
+  <script src="history.js"></script>
+</body>
+</html>

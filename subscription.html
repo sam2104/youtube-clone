@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subscriptions - YouTube Clone</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">YouTube</div>
+    <input type="text" placeholder="Search for videos..." />
+    <div class="profile"></div>
+  </div>
+
+  <!-- Dark Mode Toggle -->
+  <div class="theme-toggle">
+    <label for="toggle-dark">
+      🌙 Dark Mode
+      <input type="checkbox" id="toggle-dark" />
+    </label>
+  </div>
+
+  <!-- Main layout -->
+  <div class="container">
+    <div class="sidebar">
+      <a href="index.html">Home</a>
+      <a href="explore.html">Explore</a>
+      <a href="history.html">History</a>
+      <a href="trending.html">Trending</a>
+      <a href="shorts.html">Shorts</a>
+      <a href="subscription.html" class="active">Subscriptions</a>
+      <a href="library.html">Library</a>
+    </div>
+
+    <div class="content">
+      <h2>Subscriptions</h2>
+      <div class="video-grid">
+        <!-- Subscription videos loaded here by subscription.js -->
+      </div>
+      <button id="load-more">Load More</button>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+<div id="video-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span id="close-modal">&times;</span>
+    <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
+  <script src="shared.js"></script>
+  <script src="subscription.js"></script>
+</body>
+</html>

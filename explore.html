@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Explore - YouTube Clone</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">YouTube</div>
+    <input type="text" placeholder="Search trending videos..." />
+    <div class="profile"></div>
+  </div>
+
+  <!-- Dark Mode Toggle -->
+  <div class="theme-toggle">
+    <label for="toggle-dark">
+      🌙 Dark Mode
+      <input type="checkbox" id="toggle-dark" />
+    </label>
+  </div>
+
+  <!-- Main layout -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="index.html">Home</a>
+      <a href="explore.html" class="active">Explore</a>
+      <a href="history.html">History</a>
+      <a href="trending.html">Trending</a>
+      <a href="shorts.html">Shorts</a>
+      <a href="subscription.html">Subscriptions</a>
+      <a href="library.html">Library</a>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+      <h2>Explore</h2>
+      <div class="explore-categories">
+        <button class="category-btn" data-category="Trending">Trending</button>
+        <button class="category-btn" data-category="Music">Music</button>
+        <button class="category-btn" data-category="Gaming">Gaming</button>
+        <button class="category-btn" data-category="News">News</button>
+        <button class="category-btn" data-category="Sports">Sports</button>
+        <button class="category-btn" data-category="Learning">Learning</button>
+      </div>
+
+        <div id="exploreGrid" class="video-grid">
+        <!-- Videos will be inserted here -->
+        </div>
+
+        <button id="load-more" style="display:none;">Load More</button>
+
+        <!-- Video Modal -->
+        <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal">&times;</span>
+            <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+        </div>
+
+    </div>
+  </div>
+  <script src="shared.js"></script>
+  <script src="explore.js"></script>
+</body>
+</html>

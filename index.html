@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>YouTube Clone</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">YouTube</div>
+    <input type="text" placeholder="Search for videos..." />
+    <div class="profile"></div>
+  </div>
+
+  <!-- Main layout -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="index.html" class="active">Home</a>
+      <a href="explore.html">Explore</a>
+      <a href="history.html">History</a>
+      <a href="trending.html">Trending</a>
+      <a href="shorts.html">Shorts</a>
+      <a href="subscription.html">Subscriptions</a>
+      <a href="library.html">Library</a>
+
+      <!-- Dark mode toggle in sidebar bottom -->
+      <div class="dark-mode-toggle">
+        <label for="toggle-dark">🌙 Dark Mode
+          <input type="checkbox" id="toggle-dark" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+      <div class="video-grid">
+        <!-- Videos injected here -->
+      </div>
+      <button id="load-more">Load More</button>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="video-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-modal">&times;</span>
+      <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
