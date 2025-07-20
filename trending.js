@@ -1,12 +1,14 @@
-const API_KEY = "AIzaSyBKV3bDREYODJluCyQ_bBOTETwPQy0_sr0"; // Your API key
 const videoGrid = document.querySelector(".video-grid");
 const loadMoreBtn = document.getElementById("load-more");
 
 let nextPageToken = "";
 
-// Fetch trending videos (most popular)
+// Fetch trending videos from backend
 async function fetchTrendingVideos(isLoadMore = false) {
-  const url = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=snippet,statistics&chart=mostPopular&regionCode=US&maxResults=9${isLoadMore && nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
+  let url = `http://localhost:5000/api/trending`;
+  if (isLoadMore && nextPageToken) {
+    url += `?pageToken=${nextPageToken}`;
+  }
 
   try {
     const res = await fetch(url);

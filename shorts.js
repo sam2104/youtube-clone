@@ -1,10 +1,16 @@
-const API_KEY = "AIzaSyBKV3bDREYODJluCyQ_bBOTETwPQy0_sr0";
 const videoGrid = document.querySelector(".video-grid");
 const loadMoreBtn = document.getElementById("load-more");
 let nextPageToken = "";
+const searchQuery = "funny"; // you can make this dynamic if you want
 
 async function fetchShorts(isLoadMore = false) {
-  const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&part=snippet&type=video&videoDuration=short&maxResults=9&order=viewCount&q=funny${isLoadMore && nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
+  if (!isLoadMore) videoGrid.innerHTML = "Loading...";
+  loadMoreBtn.disabled = true;
+
+  let url = `http://localhost:5000/api/shorts?q=${encodeURIComponent(searchQuery)}`;
+  if (isLoadMore && nextPageToken) {
+    url += `&pageToken=${nextPageToken}`;
+  }
 
   try {
     const res = await fetch(url);
@@ -15,13 +21,8 @@ async function fetchShorts(isLoadMore = false) {
     if (!isLoadMore) videoGrid.innerHTML = "";
 
     if (data.items && data.items.length > 0) {
-      const videoIds = data.items.map(item => item.id.videoId).join(",");
-      const statsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=statistics&id=${videoIds}`;
-      const statsRes = await fetch(statsUrl);
-      const statsData = await statsRes.json();
-
       const statsMap = {};
-      statsData.items.forEach(item => {
+      (data.stats || []).forEach(item => {
         statsMap[item.id] = item;
       });
 
@@ -35,14 +36,16 @@ async function fetchShorts(isLoadMore = false) {
     console.error("Error fetching shorts:", error);
     videoGrid.innerHTML = "<p>Error loading videos.</p>";
     loadMoreBtn.style.display = "none";
+  } finally {
+    loadMoreBtn.disabled = false;
   }
 }
-
 
 function displayVideos(videos, statsMap) {
   videos.forEach(video => {
     const { title, channelTitle, thumbnails, publishedAt } = video.snippet;
-    const videoId = video.id.videoId;
+    const videoId = video.id.videoId || video.id;
+    const thumbnailUrl = thumbnails?.high?.url || thumbnails?.default?.url || "";
     const views = statsMap[videoId]?.statistics?.viewCount
       ? `${Number(statsMap[videoId].statistics.viewCount).toLocaleString()} views`
       : "";
@@ -51,7 +54,7 @@ function displayVideos(videos, statsMap) {
     const card = document.createElement("div");
     card.className = "video-card";
     card.innerHTML = `
-      <img src="${thumbnails.high.url}" alt="${title}">
+      <img src="${thumbnailUrl}" alt="${title}">
       <div class="video-info">
         <h4 title="${title}">${title.length > 60 ? title.slice(0, 60) + "..." : title}</h4>
         <p>${channelTitle}</p>

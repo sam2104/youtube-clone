@@ -1,11 +1,13 @@
-const API_KEY = "AIzaSyBKV3bDREYODJluCyQ_bBOTETwPQy0_sr0";
 const videoGrid = document.querySelector(".video-grid");
 const loadMoreBtn = document.getElementById("load-more");
 let nextPageToken = "";
 
 async function fetchLibraryVideos(isLoadMore = false) {
-  const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&part=snippet&type=video&maxResults=9&q=playlist${isLoadMore && nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
-
+  let url = `http://localhost:5000/api/libraryVideos`;
+  if (isLoadMore && nextPageToken) {
+    url += `?pageToken=${nextPageToken}`;
+  }
+  
   try {
     const res = await fetch(url);
     const data = await res.json();
@@ -15,17 +17,7 @@ async function fetchLibraryVideos(isLoadMore = false) {
     if (!isLoadMore) videoGrid.innerHTML = "";
 
     if (data.items && data.items.length > 0) {
-      const videoIds = data.items.map(item => item.id.videoId).join(",");
-      const statsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=statistics&id=${videoIds}`;
-      const statsRes = await fetch(statsUrl);
-      const statsData = await statsRes.json();
-
-      const statsMap = {};
-      statsData.items.forEach(item => {
-        statsMap[item.id] = item;
-      });
-
-      displayVideos(data.items, statsMap);
+      displayVideos(data.items);
       loadMoreBtn.style.display = nextPageToken ? "block" : "none";
     } else {
       videoGrid.innerHTML = "<p>No library videos found.</p>";
@@ -38,13 +30,12 @@ async function fetchLibraryVideos(isLoadMore = false) {
   }
 }
 
-function displayVideos(videos, statsMap) {
+
+function displayVideos(videos) {
   videos.forEach(video => {
     const { title, channelTitle, thumbnails, publishedAt } = video.snippet;
-    const videoId = video.id.videoId;
-    const views = statsMap[videoId]?.statistics?.viewCount
-      ? `${Number(statsMap[videoId].statistics.viewCount).toLocaleString()} views`
-      : "";
+    const videoId = video.id.videoId || video.id;  // just in case id is string
+
     const publishedDate = new Date(publishedAt).toLocaleDateString();
 
     const card = document.createElement("div");
@@ -54,7 +45,7 @@ function displayVideos(videos, statsMap) {
       <div class="video-info">
         <h4 title="${title}">${title.length > 60 ? title.slice(0, 60) + "..." : title}</h4>
         <p>${channelTitle}</p>
-        <p class="meta">${views} • ${publishedDate}</p>
+        <p class="meta">${publishedDate}</p>
       </div>
     `;
     card.addEventListener("click", () => {
@@ -63,6 +54,7 @@ function displayVideos(videos, statsMap) {
     videoGrid.appendChild(card);
   });
 }
+
 
 window.addEventListener("DOMContentLoaded", () => {
   fetchLibraryVideos();

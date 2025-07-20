@@ -1,6 +1,3 @@
-const API_KEY = "AIzaSyBKV3bDREYODJluCyQ_bBOTETwPQy0_sr0"; // Your YouTube Data API key
-const BASE_URL = "https://www.googleapis.com/youtube/v3";
-
 const historyGrid = document.getElementById("historyGrid");
 const clearHistoryBtn = document.getElementById("clear-history");
 
@@ -30,28 +27,25 @@ clearHistoryBtn.addEventListener("click", () => {
 async function fetchVideoDetails(videoIds) {
   if (videoIds.length === 0) return [];
 
-  // YouTube API limits 50 ids per request, so handle batches if needed
-  const batches = [];
-  for (let i = 0; i < videoIds.length; i += 50) {
-    batches.push(videoIds.slice(i, i + 50));
-  }
+  try {
+    // Your backend should accept multiple videoIds separated by commas
+    const url = `http://localhost:5000/api/videos?ids=${videoIds.join(",")}`;
 
-  let allItems = [];
-  for (const batch of batches) {
-    const idsParam = batch.join(",");
-    const url = `${BASE_URL}/videos?part=snippet,statistics&id=${idsParam}&key=${API_KEY}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.items) {
-        allItems = allItems.concat(data.items);
-      }
-    } catch (error) {
-      console.error("Error fetching video details:", error);
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.error) {
+      console.error("Backend error:", data.error.message);
+      return [];
     }
+
+    return data.items || [];
+  } catch (error) {
+    console.error("Error fetching video details from backend:", error);
+    return [];
   }
-  return allItems;
 }
+
 
 // Render history with fresh API data
 async function renderHistoryWithApi() {

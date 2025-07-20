@@ -1,40 +1,36 @@
-const API_KEY = "AIzaSyBKV3bDREYODJluCyQ_bBOTETwPQy0_sr0";
 const videoGrid = document.querySelector(".video-grid");
 const loadMoreBtn = document.getElementById("load-more");
-let nextPageToken = "";
 
-// Example channel IDs (replace with actual subscriptions or your favorites)
-const subscribedChannels = [
-  "UC_x5XG1OV2P6uZZ5FSM9Ttw",  // Google Developers
-  "UC29ju8bIPH5as8OGnQzwJyA",  // Traversy Media
-  "UCWv7vMbMWH4-V0ZXdmDpPBA"   // Fireship
-];
+const subscribedChannelsCount = 3; // number of channels in backend array
+
+let nextPageToken = "";
+let currentChannelIndex = 0;
 
 async function fetchSubscriptions(isLoadMore = false) {
-  // For demo: fetch latest videos from these channels (one channel at a time)
-  if (!fetchSubscriptions.currentChannelIndex) fetchSubscriptions.currentChannelIndex = 0;
+  if (!isLoadMore) {
+    videoGrid.innerHTML = "Loading...";
+    nextPageToken = "";
+    currentChannelIndex = 0;
+  }
 
-  const channelId = subscribedChannels[fetchSubscriptions.currentChannelIndex];
-  fetchSubscriptions.currentChannelIndex = (fetchSubscriptions.currentChannelIndex + 1) % subscribedChannels.length;
-
-  const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=9${isLoadMore && nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
+  // Append query params
+  let url = `http://localhost:5000/api/subscriptions?channelIndex=${currentChannelIndex}`;
+  if (isLoadMore && nextPageToken) {
+    url += `&pageToken=${nextPageToken}`;
+  }
 
   try {
     const res = await fetch(url);
     const data = await res.json();
 
     nextPageToken = data.nextPageToken || "";
+    currentChannelIndex = (data.currentChannelIndex + 1) % subscribedChannelsCount;
 
     if (!isLoadMore) videoGrid.innerHTML = "";
 
     if (data.items && data.items.length > 0) {
-      const videoIds = data.items.map(item => item.id.videoId).join(",");
-      const statsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=statistics&id=${videoIds}`;
-      const statsRes = await fetch(statsUrl);
-      const statsData = await statsRes.json();
-
       const statsMap = {};
-      statsData.items.forEach(item => {
+      (data.stats || []).forEach(item => {
         statsMap[item.id] = item;
       });
 
@@ -54,7 +50,7 @@ async function fetchSubscriptions(isLoadMore = false) {
 function displayVideos(videos, statsMap) {
   videos.forEach(video => {
     const { title, channelTitle, thumbnails, publishedAt } = video.snippet;
-    const videoId = video.id.videoId;
+    const videoId = video.id.videoId || video.id;
     const views = statsMap[videoId]?.statistics?.viewCount
       ? `${Number(statsMap[videoId].statistics.viewCount).toLocaleString()} views`
       : "";

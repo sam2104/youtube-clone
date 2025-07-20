@@ -1,4 +1,3 @@
-const API_KEY = "AIzaSyBKV3bDREYODJluCyQ_bBOTETwPQy0_sr0";
 const searchInput = document.querySelector("input");
 const videoGrid = document.querySelector(".video-grid");
 const loadMoreBtn = document.getElementById("load-more");
@@ -33,7 +32,7 @@ loadMoreBtn.addEventListener("click", () => {
 
 // Search videos function
 async function searchVideos(query, isLoadMore = false) {
-  const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&type=video&part=snippet&maxResults=9&q=${encodeURIComponent(query)}${isLoadMore && nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
+  const url = `http://localhost:5000/api/search?q=${encodeURIComponent(query)}${isLoadMore && nextPageToken ? `&pageToken=${nextPageToken}` : ""}`;
 
   try {
     if (!isLoadMore) {
@@ -48,9 +47,10 @@ async function searchVideos(query, isLoadMore = false) {
 
     if (data.items.length > 0) {
       const videoIds = data.items.map(item => item.id.videoId).join(",");
-      const statsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&part=statistics&id=${videoIds}`;
+      const statsUrl = `http://localhost:5000/api/videos?ids=${videoIds}`;
       const statsRes = await fetch(statsUrl);
       const statsData = await statsRes.json();
+
 
       const statsMap = {};
       statsData.items.forEach(item => {
@@ -81,7 +81,7 @@ async function fetchTrendingVideos() {
   videoGrid.innerHTML = "<p>Loading trending videos...</p>";
   loadMoreBtn.style.display = "none";
 
-  const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&maxResults=9&regionCode=US&key=${API_KEY}`;
+  const url = `http://localhost:5000/api/trending`;
 
   try {
     const res = await fetch(url);
